@@ -1,5 +1,7 @@
 # Kriminalita v Česku 2008–2025
 
+**Živá verze: <https://seerondrej.github.io/kriminalita/>**
+
 Interaktivní vzdělávací přehled vývoje kriminality v České republice na základě
 **otevřených dat Policie ČR**. Ukazuje, že evidovaná kriminalita dlouhodobě klesá —
 grafy, mapa krajů a filtrování podle druhu trestné činnosti.
