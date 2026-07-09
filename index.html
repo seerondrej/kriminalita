@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Kriminalita v Česku 2008–2025 · žijeme v bezpečnější době</title>
+<meta name="description" content="Interaktivní přehled vývoje kriminality v České republice na základě otevřených dat Policie ČR (2008–2025). Grafy, mapa krajů, filtrování podle typu trestné činnosti." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">◑</span>
+      <span>Kriminalita v Česku</span>
+    </a>
+    <nav class="topnav" aria-label="Sekce">
+      <a href="#trend">Trend</a>
+      <a href="#explorer">Průzkumník</a>
+      <a href="#mapa">Mapa</a>
+      <a href="#struktura">Struktura</a>
+      <a href="#zdroje">Zdroje</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO ---------------------------------------------------->
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Otevřená data Policie ČR · 2008–2025</p>
+      <h1>Žijeme v <span class="hl">bezpečnější</span> době, než si myslíme.</h1>
+      <p class="lede">
+        Evidovaná kriminalita v Česku dlouhodobě <strong>klesá</strong>. Za necelých dvacet let
+        se počet zjištěných trestných činů zhruba <strong>rozpůlil</strong>. Tady jsou reálná čísla —
+        můžete si je proklikat, filtrovat podle druhu trestné činnosti a porovnat kraje.
+      </p>
+      <div class="hero-kpis" id="heroKpis"><!-- filled by JS --></div>
+      <p class="hero-note">
+        Zdroj všech čísel: <a href="https://policie.gov.cz/statistiky-kriminalita.aspx" target="_blank" rel="noopener">Statistické přehledy kriminality, Policie ČR</a>.
+        U každého grafu najdete odkaz na konkrétní zdroj.
+      </p>
+      <div class="compat-strip">
+        <span class="ic" aria-hidden="true">⚠️</span>
+        <span><strong>Srovnatelnost dat v čase.</strong> Ne všechny roky jsou 1:1 porovnatelné —
+        v datech jsou metodické a legislativní zlomy (2010, 2013, 2016). Celkový trend je spolehlivý,
+        u konkrétních druhů činů buďte opatrní. <a href="#srovnatelnost">Číst víc →</a></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- HLAVNÍ TREND -------------------------------------------->
+  <section id="trend" class="block">
+    <div class="wrap">
+      <h2>Celkový vývoj: kolik trestných činů se stane za rok</h2>
+      <p class="block-sub">Počet <em>evidovaných (zjištěných)</em> trestných činů v celé ČR za jednotlivé roky.</p>
+      <div class="card">
+        <div class="card-controls">
+          <div class="seg" id="trendMetric" role="group" aria-label="Metrika">
+            <button data-v="abs" class="on">Počet případů</button>
+            <button data-v="per">Na 100 000 obyvatel</button>
+          </div>
+        </div>
+        <div class="chart chart-tall" id="chartTrend"></div>
+        <p class="source">
+          Zdroj: <a href="https://policie.gov.cz/statistiky-kriminalita.aspx" target="_blank" rel="noopener">Policie ČR – statistické přehledy kriminality</a>
+          · přepočet na obyvatele dle <a href="https://csu.gov.cz/obyvatelstvo" target="_blank" rel="noopener">ČSÚ</a> (orientační).
+        </p>
+      </div>
+      <p class="callout">
+        <strong>Metodická poznámka.</strong> Svislé čárkované čáry v grafech označují zlomy, které
+        omezují přesnou srovnatelnost mezi roky — <strong>nový trestní zákoník (2010)</strong>,
+        <strong>amnestii (2013)</strong> a <strong>změnu metodiky evidence (2016)</strong>. Dlouhodobý
+        sestupný trend je přesto jednoznačný napříč všemi obdobími. <a href="#srovnatelnost">Podrobné vysvětlení →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- PRŮZKUMNÍK PODLE TYPU ----------------------------------->
+  <section id="explorer" class="block alt">
+    <div class="wrap">
+      <h2>Průzkumník podle druhu trestné činnosti</h2>
+      <p class="block-sub">Vyberte kategorii nebo konkrétní trestný čin a sledujte jeho vývoj i rozložení mezi kraji.</p>
+      <div class="card">
+        <div class="card-controls">
+          <label class="field">
+            <span>Druh trestné činnosti</span>
+            <select id="crimeSelect"></select>
+          </label>
+          <div class="explorer-badge" id="explorerBadge"></div>
+        </div>
+        <div class="chart chart-tall" id="chartExplorer"></div>
+        <p class="source" id="explorerSource"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAPA ----------------------------------------------------->
+  <section id="mapa" class="block">
+    <div class="wrap">
+      <h2>Mapa krajů</h2>
+      <p class="block-sub">Rozložení vybraného druhu trestné činnosti mezi 14 kraji. Táhněte časovou osou nebo klepněte na kraj.</p>
+      <div class="card">
+        <div class="card-controls">
+          <div class="seg" id="mapMetric" role="group" aria-label="Metrika mapy">
+            <button data-v="abs" class="on">Počet případů</button>
+            <button data-v="per">Na 100 000 obyvatel</button>
+          </div>
+        </div>
+        <div class="map-year">
+          <label for="mapYear">Rok: <strong id="mapYearLabel"></strong></label>
+          <input type="range" id="mapYear" min="0" max="17" value="17" step="1" />
+        </div>
+        <div class="chart chart-map" id="chartMap"></div>
+        <div class="chart chart-region" id="chartRegion"></div>
+        <p class="source">
+          Zdroj: <a href="https://policie.gov.cz/statistiky-kriminalita.aspx" target="_blank" rel="noopener">Policie ČR</a>
+          (listy jednotlivých krajských ředitelství) · hranice krajů: otevřená geodata.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRUKTURA ------------------------------------------------>
+  <section id="struktura" class="block alt">
+    <div class="wrap">
+      <h2>Z čeho se kriminalita skládá a co se mění</h2>
+      <p class="block-sub">Hlavní kategorie trestné činnosti a jak se jejich počty vyvíjejí v čase.</p>
+      <div class="grid2">
+        <div class="card">
+          <h3 class="card-title">Kategorie v čase</h3>
+          <div class="chart" id="chartStack"></div>
+          <p class="source">Zdroj: <a href="https://policie.gov.cz/statistiky-kriminalita.aspx" target="_blank" rel="noopener">Policie ČR</a></p>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Změna 2008 → 2025</h3>
+          <div class="chart" id="chartChange"></div>
+          <p class="source">Zdroj: <a href="https://policie.gov.cz/statistiky-kriminalita.aspx" target="_blank" rel="noopener">Policie ČR</a></p>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3 class="card-title">Nejčastější trestné činy (poslední rok)</h3>
+          <div class="chart" id="chartTop"></div>
+          <p class="source">Zdroj: <a href="https://policie.gov.cz/statistiky-kriminalita.aspx" target="_blank" rel="noopener">Policie ČR</a></p>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Objasněnost: kolik případů se podaří vyřešit</h3>
+          <div class="chart" id="chartClear"></div>
+          <p class="source">Podíl objasněných z evidovaných. Zdroj: <a href="https://policie.gov.cz/statistiky-kriminalita.aspx" target="_blank" rel="noopener">Policie ČR</a></p>
+        </div>
+      </div>
+      <p class="callout balanced">
+        <strong>Poctivě: ne všechno klesá.</strong> Zatímco násilná a majetková kriminalita výrazně
+        ubývá, <strong>mravnostní trestné činy</strong> evidované policií rostou — nejčastěji se to
+        vysvětluje tím, že oběti je dnes častěji ohlásí a společnost je bere vážněji, ne nutně tím, že
+        by jich reálně přibývalo. Data ukazujeme tak, jak jsou.
+      </p>
+    </div>
+  </section>
+
+  <!-- ZDROJE --------------------------------------------------->
+  <section id="zdroje" class="block">
+    <div class="wrap">
+      <h2>Zdroje a jak si to ověřit</h2>
+      <p class="block-sub">Všechna čísla vycházejí z veřejně dostupných souborů Policie ČR. Nic jsme si nevymysleli — projděte si je.</p>
+      <div class="cards-list" id="sourcesList"></div>
+
+      <div class="card compat-box" id="srovnatelnost">
+        <h3 class="card-title">Jak číst tato data v čase (srovnatelnost)</h3>
+        <p class="block-sub" style="margin-bottom:6px">
+          Celkový sestupný trend je spolehlivý, ale mezi roky jsou zlomy, kvůli kterým nejsou
+          všechna čísla porovnatelná úplně 1:1. Uvádíme to otevřeně:
+        </p>
+        <ol>
+          <li><strong>Změna metodiky evidence (2016).</strong> Policie ČR sjednotila evidenci do jediné databáze; část poklesu mezi lety 2015 a 2016 je dána přeevidováním, ne jen reálným úbytkem.</li>
+          <li><strong>Nový trestní zákoník (2010).</strong> Zákon č. 40/2009 Sb. zavedl od 1. 1. 2010 dělení na přečiny a zločiny a změnil hranice některých skutků (např. u krádeží). Roky do 2009 a od 2010 proto nejsou plně srovnatelné.</li>
+          <li><strong>Amnestie (leden 2013).</strong> Jednorázově ovlivnila počty evidovaných i objasněných případů.</li>
+          <li><strong>Nejstarší data (2008–2009).</strong> Mají mírně jinak vedené hranice kategorií a členění policie na 8 krajů (VÚSC) místo dnešních 14 — okraje kategorií i krajské srovnání proto nesedí na 100 %.</li>
+          <li><strong>Konkrétní druhy činů</strong> jsou méně srovnatelné než souhrnné kategorie. Nejvýrazněji mravnostní kriminalita: její růst je z velké části dán tím, že oběti dnes činy častěji ohlásí — ne nutně tím, že by jich reálně přibývalo.</li>
+        </ol>
+        <div class="police-quote">
+          <div class="pq-head">Vysvětlení přímo od Policie ČR</div>
+          <blockquote>
+            „Dnem 1. ledna 2010 vstoupil v účinnost zákon č. 40/2009 Sb., trestní zákoník, který zavedl
+            dělení trestných činů na přečiny a zločiny. Od tohoto okamžiku již nelze sledovat pouze
+            spáchané trestné činy tak, jak bylo prováděno do 31. prosince roku 2009…“
+          </blockquote>
+          <p class="pq-src">
+            Zdroj: Policie ČR — <a href="https://policie.gov.cz/soubor/statistiky-nove-cleneni-kratke-vysvetleni-ke-statistikam-na-internetu-doc.aspx" target="_blank" rel="noopener">Krátké vysvětlení k sestavám kriminální statistiky</a>
+            · <a href="https://policie.gov.cz/statistiky-kriminalita.aspx" target="_blank" rel="noopener">Statistické přehledy kriminality</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="card methodology">
+        <h3 class="card-title">Metodika</h3>
+        <ul>
+          <li>Ukazujeme <strong>evidované (policií zjištěné) trestné činy</strong> — ne odsouzení. Metrika je srovnatelná napříč roky.</li>
+          <li>Roky <strong>2008–2015</strong> pocházejí ze starších tabulek (formát <code>.xls</code>), roky <strong>2016–2025</strong> z novějších (<code>.xlsx</code>). Kategorie i kraje jsme mezi oběma formáty sjednotili podle takticko-statistické klasifikace (TSK).</li>
+          <li>V roce <strong>2016</strong> Policie ČR změnila metodiku evidence — proto je tento rok v grafech vyznačen jako zlom.</li>
+          <li>Přepočty na 100 000 obyvatel jsou <strong>orientační</strong> (počet obyvatel dle ČSÚ).</li>
+          <li>Rok <strong>2025</strong> je poslední kompletní dostupný rok.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Data: <a href="https://policie.gov.cz/statistiky-kriminalita.aspx" target="_blank" rel="noopener">Policie České republiky</a> · <a href="https://csu.gov.cz/kriminalita" target="_blank" rel="noopener">ČSÚ</a>.
+    Vzdělávací přehled, nekomerční účel. Grafy: Apache ECharts.</p>
+    <p class="foot-dim">Poslední aktualizace dat: rok 2025.</p>
+  </div>
+</footer>
+
+<script src="assets/vendor/echarts.min.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

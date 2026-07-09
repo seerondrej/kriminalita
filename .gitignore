@@ -1,0 +1,9 @@
+# Large raw data mirror (108 MB) — regenerable from Policie ČR, kept out of git
+data/monthly/
+
+# OS / editor
+.DS_Store
+*.swp
+
+# Local Claude Code settings
+.claude/
